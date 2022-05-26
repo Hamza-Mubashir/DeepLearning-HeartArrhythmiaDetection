@@ -12,6 +12,13 @@ import pyrebase
 from datetime import datetime
 #from flasgger import Swagger
 import streamlit as st 
+hide_st_style = """
+                <style>
+                #MainMenu {visibility: hidden;}
+                footer {visibility: hidden;}
+                </style>
+                """
+st.markdown(hide_st_style, unsafe_allow_html = True)
 
 from PIL import Image
 st.set_page_config(page_title='Heart Disease Detection', page_icon = ":heart:")
