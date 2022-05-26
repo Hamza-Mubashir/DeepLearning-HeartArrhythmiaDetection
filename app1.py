@@ -192,7 +192,7 @@ def FrontPage():
             
                     
     <header class="w3-container w3-padding-64 w3-center">
-    <h1 class="w3-xxxlarge w3-padding-16">&#127973 Take Care of Your Health Antime Anywhere.</h1>
+    <h1 class="w3-xxxlarge w3-padding-16">&#127973 Take Care of Your Health Anytime Anywhere.</h1>
     </header>
                     
     <div class="container w3-center">
@@ -257,7 +257,7 @@ def Admin_Home():
             
                     
     <header class="w3-container w3-padding-64 w3-center">
-    <h1 class="w3-xxxlarge w3-padding-16">&#127973 Take Care of Your Health Antime Anywhere.</h1>
+    <h1 class="w3-xxxlarge w3-padding-16">&#127973 Take Care of Your Health Anytime Anywhere.</h1>
     </header>
                     
     <div class="container w3-center">
