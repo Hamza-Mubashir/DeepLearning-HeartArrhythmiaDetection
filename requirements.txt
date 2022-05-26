@@ -6,4 +6,4 @@ streamlit-option-menu==0.3.2
 pillow==8.4.0
 Keras-Applications==1.0.8
 Keras-Preprocessing==1.1.1
-pyrebase = 4.5.0
+pyrebase4 == 4.5.0
