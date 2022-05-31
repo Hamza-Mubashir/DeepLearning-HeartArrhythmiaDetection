@@ -13,7 +13,6 @@ from datetime import datetime
 #from flasgger import Swagger
 import streamlit as st 
 
-
 from PIL import Image
 st.set_page_config(page_title='Heart Disease Detection', page_icon = ":heart:")
 
@@ -24,13 +23,7 @@ import tensorflow as tf
 model = tf.keras.models.load_model('mymodel')
 classifier = model
 
-hide_st_style = """
-                <style>
-                #MainMenu {visibility: hidden;}
-                footer {visibility: hidden;}
-                </style>
-                """
-st.markdown(hide_st_style, unsafe_allow_html = True)
+
 #@app.route('/')
 def welcome():
     return "Welcome All"
@@ -192,12 +185,12 @@ def FrontPage():
             
                     
     <header class="w3-container w3-padding-64 w3-center">
-    <h1 class="w3-xxxlarge w3-padding-16">&#127973 Take Care of Your Health Anytime Anywhere.</h1>
+    <h1 class="w3-xxxlarge w3-padding-16">&#127973 Take Care of Your Health Antime Anywhere.</h1>
     </header>
                     
     <div class="container w3-center">
     <div style="text-align:justify">
-    <h2>Hey Hello!</h2>
+    <h2>Hello! there</h2>
     <p>Welcome to our perception of the future of online healthcare. The future is exciting and we hope that this gives you an idea of what healthcare could be like.</p>
     <p>According to the World Health Organization (WHO), cardiovascular diseases (CVDs) are the leading cause of death globally since they are the cause of 1/3 of global deaths. Research shows that 17.9 million people have died from CVDs in 2019 and a shocking 3/4 of the total casualties are seen in low and middle-income countries. To tackle this situation, it is important that technological advancements of the 21st century are applied to support the health care systems of such developing economies.</p>
     <p>Electrocardiogram (ECG) is extensively employed by cardiologists for observing cardiac health. The main intricacy with the manual analysis of Electrocardiogram signals lies in detecting anomalies in the signal due to the use of time-series data. Still, ECG is a reliable monitoring method for the cardiovascular system. Cardiologists being human can find it complex and challenging to effectively and accurately identify abnormalities. The difficulty increases as the number of patients increase since a lot of these cases are seen in developing countries. This shows that today detecting heart disease through electrocardiogram is of supreme importance to support the overburdened health sector.</p>
@@ -257,7 +250,7 @@ def Admin_Home():
             
                     
     <header class="w3-container w3-padding-64 w3-center">
-    <h1 class="w3-xxxlarge w3-padding-16">&#127973 Take Care of Your Health Anytime Anywhere.</h1>
+    <h1 class="w3-xxxlarge w3-padding-16">&#127973 Take Care of Your Health Antime Anywhere.</h1>
     </header>
                     
     <div class="container w3-center">
@@ -321,7 +314,7 @@ def HomePage():
             
                     
     <header class="w3-container w3-padding-64 w3-center">
-    <h1 class="w3-xxxlarge w3-padding-16">&#127973 Take Care of Your Health Anytime Anywhere.</h1>
+    <h1 class="w3-xxxlarge w3-padding-16">&#127973 Take Care of Your Health Antime Anywhere.</h1>
     </header>
                     
     <div class="container w3-center">
@@ -436,13 +429,15 @@ def emergency():
     </div>
     """
     st.markdown(html_temp,unsafe_allow_html=True)
+    
     all_users = db.get()
     res = []
     check = 0
     for users_condition in all_users.each():
         k = users_condition.val()["Condition"]
         res.append(k)
-    for users_handle in all_users.each():
+        
+    for users_condition in all_users.each():
         k = users_condition.val()["Condition"]
         if k == "Abnormal":
             check = 1
@@ -455,6 +450,7 @@ def emergency():
     if check == 0:
         disp = 'All Patients are healthy'
         st.success(disp)
+        
     
                      
 def deeplearning():
@@ -476,24 +472,33 @@ def deeplearning():
         file_details = {"filename":data_file.name,
                         "filetype":data_file.type, "filesize":data_file.size}
         st.write(file_details)
-        df = pd.read_csv(data_file)
-        st.dataframe(df)
-        print(df)
+        sig = pd.read_csv(data_file)
+        st.dataframe(sig)
+
+        print(sig)
     
     result=""
     if st.button("Predict"):
         #result=predict_note_authentication(variance,skewness,curtosis,entropy)
-        result=predict_heart_disease(df)
-        if result == 0:
+        result=predict_heart_disease(sig)
+        if result > 0.5:
+            result = 1;
+        else:
+            result = 0; 
+        if result == 1:
             display = "Abnormal"
-        elif result == 1:
+        elif result == 0:
             display = "Normal"
         condition = (display)
         db.child(user['localId']).child("Condition").set(display)
         Patient_info = 'For Patient {} with ID {}. '.format(name,ID)
         Disease_info = 'Patients Heart Condition is {}'.format(display)
-        st.success(Patient_info)
-        st.success(Disease_info)
+        if result == 1:
+            st.error(Patient_info)
+            st.error(Disease_info)
+        elif result == 0:
+            st.success(Patient_info)
+            st.success(Disease_info)
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         post = {'Post' : Patient_info + Disease_info,
@@ -506,10 +511,7 @@ def deeplearning():
             for Posts in reversed(all_posts.each()):
                 #st.write(Posts.key()) #Morty
                 st.code(Posts.val(), language = '')
-        
-    if st.button("About"):
-        st.text("Lets Learn")
-        st.text("Built with Streamlit")
+    
 
 
 # Configuration Key
@@ -620,3 +622,4 @@ def main():
     
 if __name__=='__main__':
     main()
+    
