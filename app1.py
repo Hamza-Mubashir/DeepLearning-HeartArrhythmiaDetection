@@ -12,6 +12,9 @@ import pyrebase
 from datetime import datetime
 #from flasgger import Swagger
 import streamlit as st 
+from scipy.signal import butter, lfilter, freqz
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import normalize
 
 from PIL import Image
 st.set_page_config(page_title='Heart Disease Detection', page_icon = ":heart:")
@@ -473,6 +476,28 @@ def deeplearning():
                         "filetype":data_file.type, "filesize":data_file.size}
         st.write(file_details)
         sig = pd.read_csv(data_file)
+        
+        def butter_lowpass(cutoff, fs, order):
+            nyq = 0.5 * fs
+            normal_cutoff = cutoff / nyq
+            b, a = butter(order, normal_cutoff, btype='low', analog = False)
+            return b,a
+        def butter_lowpass_filter(dataset, cutoff, fs, order):
+            b,a = butter_lowpass(cutoff, fs, order=order)
+            y = lfilter(b, a, dataset)
+            return y
+        fs = 360
+        cutoff = 25
+        order = 10
+        sig = butter_lowpass_filter(sig, cutoff, fs, order)
+        scaler = StandardScaler()
+        url='https://drive.google.com/file/d/1o0tiJrGF15ZR122yzS_soGjNcdvryE8Q/view?usp=sharing'
+        url='https://drive.google.com/uc?id=' + url.split('/')[-2]
+        X_data = pd.read_csv(url)
+        X_data = X_data.drop('Unnamed: 0', axis=1).copy()
+        scaler.fit(X_data)
+        sig = scaler.transform(sig)
+        sig = normalize(sig, norm='l2')
         st.dataframe(sig)
 
         print(sig)
@@ -481,6 +506,7 @@ def deeplearning():
     if st.button("Predict"):
         #result=predict_note_authentication(variance,skewness,curtosis,entropy)
         result=predict_heart_disease(sig)
+        #st.success(result)
         if result > 0.5:
             result = 1;
         else:
